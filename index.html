@@ -5,26 +5,104 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Mi Tienda Online</title>
   <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-    body { background-color: #f4f6f8; color: #333; padding-bottom: 60px; }
-    header { background: #111827; color: white; padding: 20px; text-align: center; }
-    .container { max-width: 1000px; margin: 20px auto; padding: 0 15px; }
-    .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 20px; margin-top: 20px; }
-    .card { background: white; border-radius: 10px; overflow: hidden; box-shadow: 0 4px 6px rgba(0,0,0,0.1); display: flex; flex-direction: column; justify-content: space-between; }
-    .card img { width: 100%; height: 200px; object-fit: cover; }
-    .card-body { padding: 15px; flex-grow: 1; display: flex; flex-direction: column; justify-content: space-between; }
-    .price { font-size: 1.25rem; font-weight: bold; color: #059669; margin: 10px 0; }
-    .btn { background: #2563eb; color: white; border: none; padding: 10px; width: 100%; border-radius: 6px; cursor: pointer; font-weight: bold; margin-top: 5px; }
-    .btn:hover { background: #1d4ed8; }
-    .cart-bar { position: fixed; bottom: 0; left: 0; right: 0; background: white; border-top: 2px solid #e5e7eb; padding: 15px; display: flex; justify-content: space-between; align-items: center; max-width: 1000px; margin: 0 auto; box-shadow: 0 -4px 10px rgba(0,0,0,0.05); }
-    .btn-ws { background: #25D366; color: white; padding: 10px 20px; text-decoration: none; border-radius: 6px; font-weight: bold; }
-    .btn-mp { background: #009EE3; color: white; padding: 10px 20px; text-decoration: none; border-radius: 6px; font-weight: bold; margin-left: 10px; }
+    :root {
+      --primary: #2563eb;
+      --primary-hover: #1d4ed8;
+      --bg: #f8fafc;
+      --card-bg: #ffffff;
+      --text: #0f172a;
+      --text-muted: #64748b;
+      --accent-ws: #25d366;
+      --accent-mp: #0084c7;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; }
+    body { background-color: var(--bg); color: var(--text); padding-bottom: 90px; }
+    
+    header {
+      background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+      color: white;
+      padding: 40px 20px;
+      text-align: center;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+    }
+    header h1 { font-size: 2.2rem; font-weight: 700; letter-spacing: -0.5px; }
+    header p { color: #94a3b8; margin-top: 8px; font-size: 1rem; }
+
+    .container { max-width: 1100px; margin: 30px auto; padding: 0 20px; }
+    .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 25px; }
+    
+    .card {
+      background: var(--card-bg);
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 10px 15px -3px rgba(0,0,0,0.05), 0 4px 6px -2px rgba(0,0,0,0.02);
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+      display: flex;
+      flex-direction: column;
+    }
+    .card:hover { transform: translateY(-4px); box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1); }
+    .card img { width: 100%; height: 220px; object-fit: cover; background: #e2e8f0; }
+    .card-body { padding: 20px; flex-grow: 1; display: flex; flex-direction: column; justify-content: space-between; }
+    .card-title { font-size: 1.15rem; font-weight: 600; margin-bottom: 8px; color: var(--text); }
+    .card-desc { font-size: 0.9rem; color: var(--text-muted); line-height: 1.4; margin-bottom: 15px; }
+    .price { font-size: 1.4rem; font-weight: 800; color: #059669; margin-bottom: 15px; }
+    
+    .btn {
+      background: var(--primary);
+      color: white;
+      border: none;
+      padding: 12px;
+      width: 100%;
+      border-radius: 10px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: background 0.2s;
+    }
+    .btn:hover { background: var(--primary-hover); }
+
+    .cart-bar {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(10px);
+      border-top: 1px solid #e2e8f0;
+      padding: 15px 25px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 -10px 25px -5px rgba(0,0,0,0.08);
+      z-index: 1000;
+    }
+    .total-container { display: flex; flex-direction: column; }
+    .total-label { font-size: 0.85rem; color: var(--text-muted); text-transform: uppercase; font-weight: 600; }
+    .total-amount { font-size: 1.5rem; font-weight: 800; color: var(--text); }
+
+    .actions { display: flex; gap: 10px; flex-wrap: wrap; }
+    .btn-action {
+      padding: 12px 20px;
+      border-radius: 10px;
+      font-weight: 700;
+      text-decoration: none;
+      color: white;
+      border: none;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.95rem;
+    }
+    .btn-ws { background: var(--accent-ws); }
+    .btn-mp { background: var(--accent-mp); }
   </style>
 </head>
 <body>
 
   <header>
     <h1>Catálogo de Productos</h1>
+    <p>Elige tus productos y realiza tu pedido al instante</p>
   </header>
 
   <div class="container">
@@ -32,19 +110,20 @@
   </div>
 
   <div class="cart-bar">
-    <div>
-      <strong>Total Carrito: </strong>$<span id="total">0</span>
+    <div class="total-container">
+      <span class="total-label">Total del Carrito</span>
+      <span class="total-amount">$<span id="total">0</span></span>
     </div>
-    <div>
-      <a id="btn-mp" href="https://link.mercadopago.com.ar/gyeimlorts" target="_blank" class="btn-mp">Pagar con Mercado Pago</a>
-      <button onclick="enviarWhatsApp()" class="btn-ws">Pedir por WhatsApp</button>
+    <div class="actions">
+      <a id="btn-mp" href="https://link.mercadopago.com.ar/gyeimlorts" target="_blank" class="btn-action btn-mp">Pagar con Mercado Pago</a>
+      <button onclick="enviarWhatsApp()" class="btn-action btn-ws">Pedir por WhatsApp</button>
     </div>
   </div>
 
   <script>
     const miNumeroWhatsApp = "542976214269";
     const productosPredeterminados = [
-      { id: 1, nombre: "Auriculares JBL Wave 380", precio: 120000, imagen: "https://via.placeholder.com/300x200?text=JBL+Wave+380", descripcion: "Auriculares Bluetooth con sonido Pure Bass y estuche de carga." }
+      { id: 1, nombre: "Auriculares JBL Wave 380", precio: 120000, imagen: "https://via.placeholder.com/400x300?text=JBL+Wave+380", descripcion: "Auriculares Bluetooth True Wireless con sonido JBL Deep Bass y estuche de carga." }
     ];
 
     let carrito = [];
@@ -65,8 +144,8 @@
             <img src="${p.imagen}" alt="${p.nombre}">
             <div class="card-body">
               <div>
-                <h3>${p.nombre}</h3>
-                <p style="font-size:0.9rem; color:#666; margin-top:5px;">${p.descripcion}</p>
+                <h3 class="card-title">${p.nombre}</h3>
+                <p class="card-desc">${p.descripcion}</p>
               </div>
               <div>
                 <div class="price">$${p.precio.toLocaleString()}</div>
@@ -82,7 +161,6 @@
       const producto = obtenerProductos().find(p => p.id === id);
       carrito.push(producto);
       actualizarTotal();
-      alert(`Agregado: ${producto.nombre}`);
     }
 
     function actualizarTotal() {
@@ -97,7 +175,7 @@
         mensaje += `- ${item.nombre}: $${item.precio.toLocaleString()}\n`;
       });
       const total = carrito.reduce((sum, item) => sum + item.precio, 0);
-      mensaje += `\n*Total: $${total.toLocaleString()}*`;
+      mensaje += `\n*Total a pagar: $${total.toLocaleString()}*`;
       
       window.open(`https://wa.me/${miNumeroWhatsApp}?text=${encodeURIComponent(mensaje)}`, '_blank');
     }
