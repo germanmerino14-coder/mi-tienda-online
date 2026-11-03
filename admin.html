@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Panel de Administración</title>
+  <style>
+    body { font-family: sans-serif; padding: 20px; max-width: 600px; margin: auto; background: #f4f4f9; }
+    form { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); margin-bottom: 20px; }
+    input, textarea, button { width: 100%; padding: 10px; margin: 8px 0; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; }
+    button { background: #059669; color: white; font-weight: bold; border: none; cursor: pointer; }
+    .item { background: white; padding: 10px; margin-bottom: 10px; border-radius: 6px; display: flex; justify-content: space-between; align-items: center; }
+    .btn-del { background: #dc2626; width: auto; padding: 5px 10px; }
+  </style>
+</head>
+<body>
+
+  <h2>Agregar Nuevo Producto</h2>
+  <form id="form-producto">
+    <input type="text" id="nombre" placeholder="Nombre del producto" required>
+    <input type="number" id="precio" placeholder="Precio ($)" required>
+    <input type="url" id="imagen" placeholder="URL de la imagen (Link)" required>
+    <textarea id="descripcion" placeholder="Descripción del producto"></textarea>
+    <button type="submit">Guardar Producto</button>
+  </form>
+
+  <h2>Productos Actuales</h2>
+  <div id="lista-admin"></div>
+
+  <script>
+    const form = document.getElementById("form-producto");
+    
+    function obtenerProductos() {
+      const guardados = localStorage.getItem("mis_productos_tienda");
+      return guardados ? JSON.parse(guardados) : [
+        { id: 1, nombre: "Auriculares JBL Wave 380", precio: 120000, imagen: "https://via.placeholder.com/300x200?text=JBL+Wave+380", descripcion: "Auriculares Bluetooth con sonido Pure Bass y estuche de carga." }
+      ];
+    }
+
+    function renderizarAdmin() {
+      const lista = obtenerProductos();
+      const cont = document.getElementById("lista-admin");
+      cont.innerHTML = "";
+      lista.forEach(p => {
+        cont.innerHTML += `
+          <div class="item">
+            <div>
+              <strong>${p.nombre}</strong> - $${p.precio}
+            </div>
+            <button class="btn-del" onclick="borrarProducto(${p.id})">Eliminar</button>
+          </div>
+        `;
+      });
+    }
+
+    form.addEventListener("submit", (e) => {
+      e.preventDefault();
+      const productos = obtenerProductos();
+      const nuevo = {
+        id: Date.now(),
+        nombre: document.getElementById("nombre").value,
+        precio: parseFloat(document.getElementById("precio").value),
+        imagen: document.getElementById("imagen").value,
+        descripcion: document.getElementById("descripcion").value
+      };
+      productos.push(nuevo);
+      localStorage.setItem("mis_productos_tienda", JSON.stringify(productos));
+      form.reset();
+      renderizarAdmin();
+      alert("Producto agregado correctamente");
+    });
+
+    function borrarProducto(id) {
+      let productos = obtenerProductos();
+      productos = productos.filter(p => p.id !== id);
+      localStorage.setItem("mis_productos_tienda", JSON.stringify(productos));
+      renderizarAdmin();
+    }
+
+    renderizarAdmin();
+  </script>
+</body>
+</html>
